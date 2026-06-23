@@ -1,0 +1,54 @@
+workspace "Hybrid Retrieval Architecture" {
+
+    model {
+        user = person "Analyst" {
+            description "Queries compliance and knowledge data"
+        }
+
+        system = softwareSystem "Knowledge Search System" {
+            description "Combines vector and graph databases for enriched retrieval"
+
+            container webApp "Search Application" {
+                technology "React/Node.js"
+                description "Front-end and orchestration layer"
+                user -> this "Submits queries"
+            }
+
+            container vectorDB "Vector Database Service" {
+                technology "Weaviate / Pinecone"
+                description "Stores embeddings and performs semantic similarity search"
+                webApp -> this "Send query embeddings"
+            }
+
+            container graphDB "Graph Database Service" {
+                technology "Neo4j / ArangoDB"
+                description "Maintains relationships and enriches results with context"
+                webApp -> this "Request contextual links"
+                vectorDB -> this "Provide candidate matches"
+            }
+
+            container guardrail "Compliance Guardrail Service" {
+                technology "Rule Engine"
+                description "Applies compliance guardrails and filters unsafe results"
+                webApp -> this "Validate results"
+                graphDB -> this "Fetch policy relationships"
+            }
+        }
+    }
+
+    views {
+        systemContext system {
+            include *
+            autolayout lr
+            title "System Context Diagram"
+        }
+
+        container system {
+            include *
+            autolayout lr
+            title "Container Diagram"
+        }
+
+        theme default
+    }
+}
