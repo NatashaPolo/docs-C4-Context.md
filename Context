@@ -1,0 +1,16 @@
+@startuml
+title C4 Container Diagram - Basic RAG
+
+actor User
+
+rectangle "Web App" as web
+rectangle "RAG API" as api
+database "Vector Database" as vectordb
+rectangle "LLM (GPT)" as llm
+
+User --> web
+web --> api
+api --> vectordb
+api --> llm
+
+@enduml
